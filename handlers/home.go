@@ -1,10 +1,23 @@
 package handlers
 
 import (
-	"fmt"
+	"html/template"
 	"net/http"
+
+	"github.com/rs/zerolog/log"
 )
 
 func HomeHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "Welcome to the Home Page!")
+	tmpl, err := template.ParseFiles("templates/layout.html", "templates/home.html")
+	if err != nil {
+		log.Error().Err(err).Msg("Error parsing template")
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	err = tmpl.Execute(w, nil)
+	if err != nil {
+		log.Error().Err(err).Msg("Error executing template")
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+	}
 }
