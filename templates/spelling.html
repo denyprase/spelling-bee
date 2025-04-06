@@ -1,18 +1,50 @@
 {{ define "content" }}
   <div class="flex flex-col items-center justify-center h-screen">
-    <div id="countdown" class="text-4xl font-bold text-accent-dark mb-6">Get ready!</div>
-    <div id="word" class="text-[clamp(3rem,10vw,8rem)] font-extrabold text-dark hidden leading-none">
+    <div id="countdown" class="text-4xl font-bold text-accent-dark mb-6 hidden">Get ready!</div>
+    <div id="beeEmoji" class="text-[clamp(4rem,10vw,10rem)] m-6 leading-none">🍯</div>
+    <div id="word" class="text-[clamp(3rem,10vw,8rem)] font-extrabold text-dark leading-none m-4 hidden ">
         {{ .Word }}
+    </div>
+    <div class="m-6 space-x-4">
+        <button id="startButton" class="btn btn-primary text-white font-bold py-2 px-4 rounded">
+            Next Word
+        </button>
+        <button id="showNowButton" class="btn btn-primary text-white font-bold py-2 px-4 rounded opacity-50 cursor-not-allowed" disabled>
+            Display Word
+        </button>
+    </div>
+    <div class="flex flex-col m-6 space-y-4 items-center justify-center">
+        <p class="text-accent-dark font-semibold">🌻 Round 1 with extra long text lorem ipsum 🌻</p>
+        <p class="text-accent-dark font-semibold">🐝 1/4 words used 🐝</p>
+        <button class="btn btn-dark text-white font-bold rounded">
+            Reset Round
+        </button>
     </div>
   </div>
 
   <script>
+    const beeEmoji = document.getElementById("beeEmoji");
+    const wordElement = document.getElementById("word");
+    const countdownElement = document.getElementById("countdown");
+    const startButton = document.getElementById("startButton");
+    const showNowButton = document.getElementById("showNowButton");
+
+    let timer = null;
+
+    function enableShowNowButton() {
+        showNowButton.disabled = false;
+        showNowButton.classList.remove("opacity-50", "cursor-not-allowed");
+    }
+
+    function disableShowNowButton() {
+        showNowButton.disabled = true;
+        showNowButton.classList.add("opacity-50", "cursor-not-allowed");
+    }
+
     function startCountdown(durationInSeconds) {
-      const countdownElement = document.getElementById("countdown");
-      const wordElement = document.getElementById("word");
       let timeRemaining = durationInSeconds;
 
-      wordElement.classList.remove("hidden");
+      countdownElement.classList.remove("hidden");
 
       function updateCountdown() {
         let minutes = Math.floor(timeRemaining / 60);
@@ -26,17 +58,39 @@
           timeRemaining--;
         } else {
           clearInterval(timer);
-          countdownElement.textContent = "Time's up!";
-          wordElement.classList.add("hidden");
+          timer = null;
+          countdownElement.textContent = "Time is up!";
+          wordElement.classList.remove("hidden");
+          disableShowNowButton();
         }
       }
 
       updateCountdown();
-      const timer = setInterval(updateCountdown, 1000);
+      timer = setInterval(updateCountdown, 1000);
     }
 
-    setTimeout(() => {
-      startCountdown(60);
-    }, 3000);
+    startButton.addEventListener("click", () => {
+      beeEmoji.classList.add("hidden");
+      wordElement.classList.remove("hidden");
+      countdownElement.classList.add("hidden");
+
+      // Show word for 3 seconds, then start countdown
+      setTimeout(() => {
+        wordElement.classList.add("hidden");
+        startCountdown(20);
+        enableShowNowButton();
+      }, 3000);
+    });
+
+    showNowButton.addEventListener("click", () => {
+      if (timer !== null) {
+        clearInterval(timer);
+        timer = null;
+      }
+
+      wordElement.classList.remove("hidden");
+      countdownElement.classList.add("hidden");
+      disableShowNowButton();
+    });
   </script>
 {{ end }}
