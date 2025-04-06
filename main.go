@@ -20,6 +20,7 @@ func main() {
 	})
 	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	mux.HandleFunc("/about", handlers.AboutHandler)
+	mux.HandleFunc("/spelling", handlers.SpellingHandler)
 
 	loggedMux := middleware.LoggerMiddleware(mux)
 

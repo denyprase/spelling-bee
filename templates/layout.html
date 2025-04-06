@@ -1,22 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>{{ block "title" . }}Spelling Bee{{ end }}</title>
+  <title>{{ block "title" . }}PB Spelling Bee{{ end }}</title>
   
   <link rel="icon" href="/static/favicon.ico">
-  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,typography,aspect-ratio,line-clamp"></script>
+  <link rel="stylesheet" href="/static/styles.css">
 </head>
-<body class="bg-gray-50 text-gray-800">
-  <nav class="bg-white shadow p-4 flex justify-between">
-    <a href="/">Home</a> |
-    <a href="/about">About</a>
-  </nav>
 
-  <main class="p-6">
+<body>
+  {{ if .ShowNavbar }}
+  <nav class="bg-primary-dark shadow p-4 flex">
+    <a class="m-2 text-lg font-semibold text-black hover:text-gray-500" href="/">Home</a>
+    <a class="m-2 text-lg font-semibold text-black hover:text-gray-500" href="/about">About</a>
+  </nav>
+  {{ end }}
+
+  <main class="min-h-screen flex items-center justify-center bg-primary">
     {{ block "content" . }}{{ end }}
   </main>
 </body>
+
 </html>
