@@ -22,6 +22,8 @@ func main() {
 	mux.HandleFunc("/about", handlers.AboutHandler)
 	mux.HandleFunc("/spelling", handlers.SpellingHandler)
 
+	mux.HandleFunc("/api/word", handlers.GetRandomWordAPI)
+
 	loggedMux := middleware.LoggerMiddleware(mux)
 
 	log.Info().Msg("Server running at http://localhost:8080")
