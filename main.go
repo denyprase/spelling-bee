@@ -19,7 +19,9 @@ func main() {
 		handlers.HomeHandler(w, r)
 	})
 	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
+
 	mux.HandleFunc("/about", handlers.AboutHandler)
+	mux.HandleFunc("/session", handlers.SessionHandler)
 	mux.HandleFunc("/spelling", handlers.SpellingHandler)
 
 	mux.HandleFunc("/api/word", handlers.GetRandomWordAPI)

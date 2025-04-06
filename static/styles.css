@@ -15,6 +15,10 @@
   .bg-accent-dark {
     background-color: #e5ac3f;
   }
+
+  .hover\:bg-accent-dark:hover {
+    background-color: #e5ac3f;
+  }
   
   .text-dark {
     color: #312f17;
