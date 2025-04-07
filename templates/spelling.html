@@ -28,6 +28,9 @@
     const countdownElement = document.getElementById("countdown");
     const startButton = document.getElementById("startButton");
     const showNowButton = document.getElementById("showNowButton");
+  
+    const countdownDuration = "{{ .CountdownTime }}";
+    const wordDisplayTime = "{{ .DisplayDuration }}";
 
     let timer = null;
 
@@ -91,9 +94,9 @@
       // Show word for 3 seconds, then start countdown
       setTimeout(() => {
         wordElement.classList.add("hidden");
-        startCountdown(20);
+        startCountdown(countdownDuration);
         enableShowNowButton();
-      }, 3000);
+      }, wordDisplayTime);
     });
 
     showNowButton.addEventListener("click", () => {
