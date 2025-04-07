@@ -25,6 +25,7 @@ func main() {
 	mux.Handle("GET /sessions", http.HandlerFunc(handlers.SessionListHandler))
 	mux.Handle("POST /sessions", http.HandlerFunc(handlers.CreateSessionHandler))
 	mux.Handle("GET /sessions/new", http.HandlerFunc(handlers.NewSessionHandler))
+	mux.Handle("GET /sessions/detail", http.HandlerFunc(handlers.SessionDetailHandler))
 	mux.Handle("GET /spelling", http.HandlerFunc(handlers.SpellingHandler))
 
 	mux.Handle("GET /api/word", http.HandlerFunc(handlers.GetRandomWordAPI))

@@ -1,0 +1,48 @@
+{{ define "content" }}
+<div>
+  <div class="max-w-xl mx-auto bg-primary-dark text-accent-dark p-6 rounded-lg shadow-lg space-y-6 my-6">
+    <div>
+      <h2 class="text-2xl font-bold text-accent mb-2 text-center">{{ .Session.Name }}</h2>
+        
+      <div class="flex gap-8 font-medium text-accent-dark text-sm justify-between">
+        <p>🕒 Display Time: {{ .Session.DisplayTime }}s</p>
+        <p>⌛ Answer Time: {{ .Session.AnswerTime }}s</p>
+      </div>
+    </div>
+
+    <div>
+      <h3 class="text-xl font-semibold mb-2">Rounds</h3>
+      <div class="space-y-2">
+        {{ range .Rounds }}
+          <div class="bg-accent text-white px-4 py-2 rounded hover:bg-accent-dark cursor-pointer">
+            Round {{ .Number }}
+          </div>
+        {{ else }}
+          <p class="text-center">🌻</p>
+          <p class="text-center">No rounds yet. Click below to add one!</p>
+        {{ end }}
+      </div>
+    </div>
+
+    <div class="text-center">
+      <a href="/sessions/{{ .Session.ID }}/rounds/new" class="btn btn-dark px-6 py-2 text-accent-dark rounded hover:bg-accent-dark">
+        ➕ New Round
+      </a>
+    </div>
+  </div>
+
+  <div class="flex flex-col w-full items-center gap-4 my-6">
+    <div class="text-center w-full">
+        <a href="/sessions/{{ .Session.ID }}/edit" class="btn btn-primary px-6 py-2 text-white rounded hover:bg-accent-dark w-full">
+          ✏️ Edit Session
+        </a>
+      </div>
+
+      <div class="text-center w-full">
+        <a href="/sessions/{{ .Session.ID }}/delete" class="btn btn-primary px-6 py-2 text-white rounded hover:bg-red-700 w-full">
+          🗑️ Delete Session
+        </a>
+      </div>
+  </div>
+</div>
+{{ end }}
