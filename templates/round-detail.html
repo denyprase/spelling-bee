@@ -1,0 +1,28 @@
+{{ define "content" }}
+<div>
+  <div class="max-w-xl mx-auto bg-primary-dark text-accent-dark p-6 rounded-lg shadow-lg space-y-6 my-6">
+  
+    <div class="mb-2">
+      <h2 class="text-2xl font-bold text-accent mb-2 text-center">{{ .Round.Name }}</h2>
+        
+      <div class="flex gap-8 font-medium text-accent-dark text-sm justify-between">
+        <p>✅ Limit: {{ .Round.LimitLength }}</p>
+        <p>📏 Length: {{ .Round.Length }}</p>
+        <p>▶️ Playing: {{ .Round.Playing }}</p>
+      </div>
+    </div>
+
+    <div>
+      <h2 class="mt-6 text-xl font-semibold">Words</h2>
+      <ul class="list-disc pl-6">
+      {{ range .Words }}
+          <li>{{ . }}</li>
+      {{ else }}
+          <li>No words added yet.</li>
+      {{ end }}
+      </ul>
+    </div>
+
+  </div>
+</div>
+{{ end }}

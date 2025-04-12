@@ -52,7 +52,7 @@ func (db *DB) GetRoundByID(id int) (*Round, error) {
 		SELECT id, session_id, name, limit_length, length, playing
 		FROM rounds
 		WHERE id = $1
-	`, id).Scan(&r.ID, &r.SessionID, &r.Name, &r.CreatedAt, &r.UpdatedAt)
+	`, id).Scan(&r.ID, &r.SessionID, &r.Name, &r.LimitLength, &r.Length, &r.Playing)
 	if err != nil {
 		return nil, err
 	}

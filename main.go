@@ -47,6 +47,7 @@ func main() {
 	mux.Handle("GET /sessions/new", http.HandlerFunc(appHandler.NewSessionHandler))
 	mux.Handle("GET /sessions/detail", http.HandlerFunc(appHandler.SessionDetailHandler))
 	mux.Handle("GET /spelling", http.HandlerFunc(appHandler.SpellingHandler))
+	mux.Handle("GET /rounds/detail", http.HandlerFunc(appHandler.RoundDetailHandler))
 
 	mux.Handle("GET /api/word", http.HandlerFunc(handlers.GetRandomWordAPI))
 
