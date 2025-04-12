@@ -16,7 +16,7 @@
       <h2 class="mt-6 text-xl font-semibold">Words</h2>
       <ul class="list-disc pl-6">
       {{ range .Words }}
-          <li>{{ . }}</li>
+          <li>{{ .Text }}</li>
       {{ else }}
           <li>No words added yet.</li>
       {{ end }}

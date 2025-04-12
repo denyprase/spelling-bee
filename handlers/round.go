@@ -23,9 +23,16 @@ func (h *AppHandler) RoundDetailHandler(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
+	words, err := h.DB.GetWordsByRoundID(round.ID)
+	if err != nil {
+		fmt.Println("Error fetching words:", err.Error())
+		http.NotFound(w, r)
+		return
+	}
+
 	data := map[string]interface{}{
 		"Round": round,
-		"Words": []string{"bee", "ant", "egg"},
+		"Words": words,
 	}
 
 	utils.RenderTemplate(w, r, "round-detail.html", data)

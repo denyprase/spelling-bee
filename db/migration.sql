@@ -33,3 +33,21 @@ VALUES
   (1, 'Introduction Round',true, 3),
   (1, 'Final Round', true, 4);
 
+
+CREATE TABLE words (
+    id SERIAL PRIMARY KEY,
+    round_id INTEGER NOT NULL REFERENCES rounds(id) ON DELETE CASCADE,
+    text VARCHAR(50) NOT NULL,
+    used BOOLEAN NOT NULL DEFAULT FALSE
+);
+
+INSERT INTO words (round_id, text) VALUES
+(1, 'cat'),
+(1, 'sun'),
+(1, 'map');
+
+INSERT INTO words (round_id, text) VALUES
+(2, 'frog'),
+(2, 'milk'),
+(2, 'wind'),
+(2, 'book');

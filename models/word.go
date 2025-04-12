@@ -1,45 +1,70 @@
 package models
 
-import "fmt"
-
 type Word struct {
-	ID      string
-	RoundID string
-	Word    string
+	ID      int
+	RoundID int
+	Text    string
+	Used    bool
 }
 
-var dummyWords = []Word{
-	{ID: "1", RoundID: "r1", Word: "cat"},
-	{ID: "2", RoundID: "r1", Word: "dog"},
-	{ID: "3", RoundID: "r1", Word: "sun"},
-	{ID: "4", RoundID: "r1", Word: "pen"},
-	{ID: "5", RoundID: "r1", Word: "run"},
-	{ID: "6", RoundID: "r1", Word: "map"},
-	{ID: "7", RoundID: "r1", Word: "box"},
-	{ID: "8", RoundID: "r1", Word: "hat"},
-	{ID: "9", RoundID: "r2", Word: "book"},
-	{ID: "10", RoundID: "r2", Word: "door"},
-	{ID: "11", RoundID: "r2", Word: "fish"},
-	{ID: "12", RoundID: "r2", Word: "game"},
-	{ID: "13", RoundID: "r2", Word: "jump"},
-	{ID: "14", RoundID: "r2", Word: "milk"},
-	{ID: "15", RoundID: "r2", Word: "moon"},
-	{ID: "16", RoundID: "r2", Word: "star"},
+func (db *DB) InsertWord(roundID int, text string) (*Word, error) {
+	query := `
+		INSERT INTO words (round_id, text)
+		VALUES ($1, $2, $3)
+		RETURNING id
+	`
+	var id int
+	var used bool
+	err := db.Conn.QueryRow(query, roundID, text).Scan(&id, &used)
+	if err != nil {
+		return nil, err
+	}
+	return &Word{
+		ID:      id,
+		RoundID: roundID,
+		Text:    text,
+		Used:    used,
+	}, nil
 }
 
-func GetWords() ([]Word, error) {
-	return dummyWords, nil
-}
+func (db *DB) GetWordsByRoundID(roundID int) ([]Word, error) {
+	query := `
+		SELECT id, round_id, text, used
+		FROM words
+		WHERE round_id = $1
+		ORDER BY id ASC
+	`
+	rows, err := db.Conn.Query(query, roundID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
 
-func GetWordsByRoundID(roundID string) ([]Word, error) {
 	var words []Word
-	for _, word := range dummyWords {
-		if word.RoundID == roundID {
-			words = append(words, word)
+	for rows.Next() {
+		var w Word
+		if err := rows.Scan(&w.ID, &w.RoundID, &w.Text, &w.Used); err != nil {
+			return nil, err
 		}
+		words = append(words, w)
 	}
-	if len(words) == 0 {
-		return nil, fmt.Errorf("no words found for round ID: %s", roundID)
-	}
-	return words, nil
+
+	return words, rows.Err()
 }
+
+// func GetWords() ([]Word, error) {
+// 	return dummyWords, nil
+// }
+
+// func GetWordsByRoundID(roundID string) ([]Word, error) {
+// 	var words []Word
+// 	for _, word := range dummyWords {
+// 		if word.RoundID == roundID {
+// 			words = append(words, word)
+// 		}
+// 	}
+// 	if len(words) == 0 {
+// 		return nil, fmt.Errorf("no words found for round ID: %s", roundID)
+// 	}
+// 	return words, nil
+// }
