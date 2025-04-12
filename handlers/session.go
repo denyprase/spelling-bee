@@ -23,12 +23,21 @@ func (h *AppHandler) NewSessionHandler(w http.ResponseWriter, r *http.Request) {
 func (h *AppHandler) CreateSessionHandler(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	name := r.FormValue("name")
-	displayTime, _ := strconv.Atoi(r.FormValue("display_time"))
-	answerTime, _ := strconv.Atoi(r.FormValue("answer_time"))
-	fmt.Println(name)
-	fmt.Println(displayTime)
-	fmt.Println(answerTime)
-	http.Redirect(w, r, fmt.Sprintf("/sessions/detail?id=%d", 2), http.StatusSeeOther)
+	displayTime, errDisplay := strconv.Atoi(r.FormValue("display_time"))
+	answerTime, errAnswer := strconv.Atoi(r.FormValue("answer_time"))
+	if errDisplay != nil || errAnswer != nil {
+		fmt.Println("Error converting display or answer time:", errDisplay, errAnswer)
+		http.Error(w, "Invalid session ID", http.StatusBadRequest)
+		return
+	}
+	session, err := h.DB.InsertSession(name, displayTime, answerTime)
+	if err != nil {
+		fmt.Println("Error inserting session:", err.Error())
+		http.Error(w, "Error inserting session", http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, fmt.Sprintf("/sessions/detail?id=%d", session.ID), http.StatusSeeOther)
 }
 
 func (h *AppHandler) SessionDetailHandler(w http.ResponseWriter, r *http.Request) {
