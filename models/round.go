@@ -1,28 +1,66 @@
 package models
 
+import "time"
+
 type Round struct {
-	ID          string
-	SessionID   string
+	ID          int
+	SessionID   int
+	Name        string
 	LimitLength bool
 	Length      int
 	Playing     bool
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
 }
 
-var dummyRounds = map[string][]Round{
-	"1": {
-		{ID: "r1", SessionID: "1", LimitLength: true, Length: 3, Playing: true},
-		{ID: "r2", SessionID: "1", LimitLength: true, Length: 4, Playing: false},
-	},
-	"2": {},
+func (db *DB) CreateRound(sessionID int, name string) error {
+	now := time.Now()
+	_, err := db.Conn.Exec(`
+		INSERT INTO rounds (session_id, name, limit, length)
+		VALUES ($1, $2, $3, $4)
+	`, sessionID, name, now, now)
+	return err
 }
 
-func GetRoundsBySessionID(sessionID string) ([]Round, error) {
-	return dummyRounds[sessionID], nil
+func (db *DB) GetRoundsBySessionID(sessionID int) ([]Round, error) {
+	rows, err := db.Conn.Query(`
+		SELECT id, session_id, name, limit_length, length, playing
+		FROM rounds
+		WHERE session_id = $1
+		ORDER BY id ASC
+	`, sessionID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var rounds []Round
+	for rows.Next() {
+		var r Round
+		if err := rows.Scan(&r.ID, &r.SessionID, &r.Name, &r.LimitLength, &r.Length, &r.Playing); err != nil {
+			return nil, err
+		}
+		rounds = append(rounds, r)
+	}
+
+	return rounds, nil
+}
+
+func (db *DB) GetRoundByID(id int) (*Round, error) {
+	var r Round
+	err := db.Conn.QueryRow(`
+		SELECT id, session_id, name, limit_length, length, playing
+		FROM rounds
+		WHERE id = $1
+	`, id).Scan(&r.ID, &r.SessionID, &r.Name, &r.CreatedAt, &r.UpdatedAt)
+	if err != nil {
+		return nil, err
+	}
+	return &r, nil
 }
 
 func (r *Round) WordsCount() int {
-	words, _ := GetWordsByRoundID(r.ID)
-	return len(words)
+	return 1000
 }
 
 func (r *Round) PlayingStatus() string {

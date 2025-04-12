@@ -73,12 +73,11 @@ func (db *DB) UpdateSession(sessionID int, name string, displayTime, answerTime 
 }
 
 func (db *DB) GetSessionByID(sessionID int) (*Session, error) {
-	query := `SELECT id, name, display_time, answer_time, created_at, updated_at
+	query := `SELECT id, name, display_time, answer_time
               FROM sessions WHERE id = $1`
 
 	var session Session
-	err := db.Conn.QueryRow(query, sessionID).Scan(&session.ID, &session.Name, &session.DisplayTime,
-		&session.AnswerTime, &session.CreatedAt, &session.UpdatedAt)
+	err := db.Conn.QueryRow(query, sessionID).Scan(&session.ID, &session.Name, &session.DisplayTime, &session.AnswerTime)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, nil // Return nil if no session found with the given ID

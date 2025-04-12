@@ -3,7 +3,6 @@ package handlers
 import (
 	"fmt"
 	"net/http"
-	"spelling-bee/models"
 	"spelling-bee/utils"
 	"strconv"
 )
@@ -36,17 +35,25 @@ func (h *AppHandler) SessionDetailHandler(w http.ResponseWriter, r *http.Request
 	sessionIDStr := r.URL.Query().Get("id")
 	sessionID, err := strconv.Atoi(sessionIDStr)
 	if err != nil {
+		fmt.Println("Error converting session ID:", err.Error())
 		http.Error(w, "Invalid session ID", http.StatusBadRequest)
 		return
 	}
 
 	session, err := h.DB.GetSessionByID(sessionID)
 	if err != nil {
+		fmt.Println("Error fetching session:", err.Error())
 		http.NotFound(w, r)
 		return
 	}
 
-	rounds, _ := models.GetRoundsBySessionID(sessionIDStr)
+	rounds, err := h.DB.GetRoundsBySessionID(sessionID)
+	if err != nil {
+		fmt.Println("Error fetching rounds:", err.Error())
+		http.Error(w, "Invalid session ID", http.StatusBadRequest)
+		return
+	}
+
 	data := map[string]interface{}{
 		"Session": session,
 		"Rounds":  rounds,
